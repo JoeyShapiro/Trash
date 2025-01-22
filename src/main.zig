@@ -2,18 +2,34 @@ const std = @import("std");
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    // TODO print pic of waifu
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    while (true) {
+        // stdout is for the actual output of your application, for example if you
+        // are implementing gzip, then only the compressed bytes should be sent to
+        // stdout, not any debugging messages.
+        const stdout_file = std.io.getStdOut().writer();
+        var bw = std.io.bufferedWriter(stdout_file);
+        const stdout = bw.writer();
+        _ = try stdout.write("$: ");
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+        try bw.flush(); // don't forget to flush!
 
-    try bw.flush(); // don't forget to flush!
+        // get stdin from user
+        const stdin_file = std.io.getStdIn().reader();
+        var br = std.io.bufferedReader(stdin_file);
+        const stdin = br.reader();
+        var msg_buf: [4096]u8 = undefined;
+        const msg = try stdin.readUntilDelimiterOrEof(&msg_buf, '\n');
+
+        if (msg) |m| {
+            _ = try stdout.write(m);
+            _ = try stdout.write("\n");
+            try bw.flush(); // don't forget to flush!
+        } else {
+            break;
+        }
+    }
 }
 
 test "simple test" {
