@@ -1,0 +1,14 @@
+[package]
+name = "trash"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[profile.release]
+opt-level = "z"  # Optimize for size
+lto = true       # Enable link-time optimization
+codegen-units = 1
+panic = "abort"  # Remove panic unwinding
+strip = true     # Strip symbols
+debug = false
