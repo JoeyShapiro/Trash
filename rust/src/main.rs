@@ -10,11 +10,22 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn main() -> i32 {
-    let msg = b"$: ";
-    write(1, msg);
     let mut buf = [0u8; 1024];
-    let len = read(0, &mut buf);
-    write(1, &buf[..len as usize]);
+
+    loop {
+        let msg = b"$: ";
+        write(1, msg);
+
+        let len = read(0, &mut buf);
+        write(1, &buf[..len as usize]);
+
+        if buf[0] == b'e' &&
+           buf[1] == b'x' &&
+           buf[2] == b'i' &&
+           buf[3] == b't' {
+            break;
+        }
+    }
 
     0
 }
