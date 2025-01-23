@@ -15,19 +15,14 @@ pub extern "C" fn main() -> i32 {
     0
 }
 
+extern "C" {
+    fn asm_write(fd: i32, buf: *const u8, len: usize) -> i32;
+}
+
 fn write(fd: i32, buf: &[u8]) -> i32 {
     let ret: i32;
     unsafe {
-        core::arch::asm!(
-            "mov x0, {:x}",          // stdout fd
-            "mov x1, {}",          // buffer
-            "mov x2, {}",          // length
-            "mov x16, #4",         // write syscall
-            "svc #0x80",          // syscall
-            inout(reg) fd => ret,
-            in(reg) buf.as_ptr(),
-            in(reg) buf.len(),
-        );
+        ret = asm_write(fd, buf.as_ptr(), buf.len());
     }
     ret
 }

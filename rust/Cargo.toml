@@ -12,3 +12,6 @@ codegen-units = 1
 panic = "abort"  # Remove panic unwinding
 strip = true     # Strip symbols
 debug = false
+
+[build-dependencies]
+cc = "1.0"
